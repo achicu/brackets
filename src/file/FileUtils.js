@@ -245,6 +245,8 @@ define(function (require, exports, module) {
      * @return {string}
      */
     function getNativeBracketsDirectoryPath() {
+        if (brackets.inBrowser)
+            return "/";
         var pathname = decodeURI(window.location.pathname);
         var directory = pathname.substr(0, pathname.lastIndexOf("/"));
         return convertToNativePath(directory);

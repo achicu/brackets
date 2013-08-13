@@ -271,7 +271,7 @@ define(function (require, exports, module) {
         }
 
         // Enable/Disable HTML Menus
-        if (brackets.platform !== "linux") {
+        if (!brackets.inBrowser && brackets.platform !== "linux") {
             $("body").addClass("has-appshell-menus");
         }
         

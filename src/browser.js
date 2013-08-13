@@ -44,6 +44,8 @@ if (!appshell.app) {
 
     "use strict";
 
+    appshell.inBrowser = true;
+
     var globalFS = null;
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     var initialDirectories = [
@@ -59,7 +61,7 @@ if (!appshell.app) {
         "/.git"
     ];
     var initialFileSystem = {
-        "/samples/root/Getting Started/index": "Getting Started",
+        "/samples/root/Getting Started/index.html": "Getting Started",
         "/.git/HEAD": "V1"
     };
     function initSampleDirFS(callback) {

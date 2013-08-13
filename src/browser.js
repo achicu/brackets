@@ -112,7 +112,7 @@ if (!appshell.app) {
             fileEntry.createWriter(function(writer) {
                 // var blobBuilder = new BlobBuilder();
                 // blobBuilder.append(content);
-                writer.onwrite = callback;
+                writer.onwriteend = callback;
                 console.log("writing ", path, " ", content);
                 // writer.write(blobBuilder.getBlob());
                 var blob = new Blob([content], {type: 'text/plain'});
@@ -411,6 +411,10 @@ if (!appshell.app) {
     /* native */ function GetFileModificationTime(callback, path) {
         console.log("GetFileModificationTime", Array.prototype.slice.apply(arguments));
         function done(entry) {
+            if (!entry.getMetadata) {
+                callback(appshell.fs.NO_ERROR, new Date(), entry.isDirectory);
+                return;
+            }
             entry.getMetadata(function(metadata) {
                 callback(appshell.fs.NO_ERROR, metadata.modificationTime, entry.isDirectory);
             }, errorHandler);
@@ -541,8 +545,8 @@ if (!appshell.app) {
                 writer.onerror = function() {
                     callback(appshell.fs.ERR_UNSUPPORTED_ENCODING);
                 };
-                writer.onwrite = function() {
-                    writer.onwrite = function() {
+                writer.onwriteend = function() {
+                    writer.onwriteend = function() {
                         callback(appshell.fs.NO_ERROR);
                     };
                     writer.write(new Blob([data], {type: "text/plain"}));

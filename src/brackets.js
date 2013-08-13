@@ -167,13 +167,13 @@ define(function (require, exports, module) {
         EditorManager.setEditorHolder($("#editor-holder"));
 
         // Let the user know Brackets doesn't run in a web browser yet
-        if (brackets.inBrowser) {
-            Dialogs.showModalDialog(
-                DefaultDialogs.DIALOG_ID_ERROR,
-                Strings.ERROR_IN_BROWSER_TITLE,
-                Strings.ERROR_IN_BROWSER
-            );
-        }
+        // if (brackets.inBrowser) {
+        //     Dialogs.showModalDialog(
+        //         DefaultDialogs.DIALOG_ID_ERROR,
+        //         Strings.ERROR_IN_BROWSER_TITLE,
+        //         Strings.ERROR_IN_BROWSER
+        //     );
+        // }
 
         // Use quiet scrollbars if we aren't on Lion. If we're on Lion, only
         // use native scroll bars when the mouse is not plugged in or when
@@ -341,9 +341,11 @@ define(function (require, exports, module) {
         });
     }
 
-    // Dispatch htmlReady event
-    _beforeHTMLReady();
-    AppInit._dispatchReady(AppInit.HTML_READY);
+    brackets.fs.initFS(function() {
+        // Dispatch htmlReady event
+        _beforeHTMLReady();
+        AppInit._dispatchReady(AppInit.HTML_READY);
 
-    $(window.document).ready(_onReady);
+        $(window.document).ready(_onReady);
+    });
 });

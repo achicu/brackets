@@ -108,7 +108,7 @@ if (!appshell.app) {
         });
     }
     function writeFile(path, content, callback) {
-        globalFS.root.getFile(path, { create: true }, function(fileEntry) {
+        globalFS.root.getFile(path, { create: true, exclusive: true }, function(fileEntry) {
             fileEntry.createWriter(function(writer) {
                 // var blobBuilder = new BlobBuilder();
                 // blobBuilder.append(content);
@@ -120,7 +120,7 @@ if (!appshell.app) {
             });
         }, function(argument) {
             // It means the file already exists from previous runs.
-            console.log(argument);
+            console.log("File already exists", path, argument);
             callback();
         });
     }
@@ -538,13 +538,16 @@ if (!appshell.app) {
         console.log("WriteFile", Array.prototype.slice.apply(arguments));
         globalFS.root.getFile(path, { create: true }, function(entry) {
             entry.createWriter(function(writer) {
-                writer.onwrite = function() {
-                    callback(appshell.fs.NO_ERROR);
-                };
                 writer.onerror = function() {
                     callback(appshell.fs.ERR_UNSUPPORTED_ENCODING);
                 };
-                writer.write(new Blob([data], {type: "text/plain"}));
+                writer.onwrite = function() {
+                    writer.onwrite = function() {
+                        callback(appshell.fs.NO_ERROR);
+                    };
+                    writer.write(new Blob([data], {type: "text/plain"}));
+                };
+                writer.truncate(0);
             }, function() {
                 callback(appshell.fs.ERR_CANT_WRITE);
             });

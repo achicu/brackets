@@ -216,7 +216,9 @@ function FileWriter(fileEntry) {
   };
 
   this.truncate = function(size) {
-    if (size < this.length) {
+    if (!blob_) {
+      blob_ = new Blob([new Uint8Array(size)], {type: ""});
+    } else if (size < this.length) {
       blob_ = blob_.slice(0, size);
     } else {
       blob_ = new Blob([blob_, new Uint8Array(size - this.length)],
